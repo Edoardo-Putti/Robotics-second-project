@@ -1,6 +1,9 @@
 <launch>
 <param name="/use_sim_time" value="true"/>
 <node pkg="tf" type="static_transform_publisher" name="optitrack" args="0 0 0 3.14 0 0  Robot_1/base_link os1_lidar 100" />
+
+<node pkg="tf" type="static_transform_publisher" name="world2odom" args="0 0 0 0 0 0  map Robot_1/base_link 100" />
+
 <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
 <remap from="cloud_in" to="/os1_cloud_node/points"/>
 <remap from="scan" to="/scan"/>
@@ -13,7 +16,7 @@ angle_max: 3.14
 angle_increment: 0.0087
 scan_time: 0.3333
 range_min: 0.45
-range_max: 10.0
+range_max: 100.0
 use_inf: true
 concurrency_level: 1
 </rosparam>
@@ -21,8 +24,8 @@ concurrency_level: 1
 
 <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen" >
   <remap from="scan" to="/scan" />
-  <param name="odom_frame" value="/Robot_1/base_link" />
-  <param name="base_frame" value="/Robot_1/base_link" />
+  <param name="odom_frame" value="/Robot_1/pose" />
+  <param name="base_frame" value="/os1_lidar" />
   <param name="map_update_interval" value="5.0"/>
   <param name="maxUrange" value="6.0"/>
   <param name="maxRange" value="8.0"/>

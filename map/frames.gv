@@ -1,0 +1,29 @@
+digraph G {
+"map" -> "map_ned"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1589465706.252 sec old)\nBuffer length: 0.000 sec\n"];
+"odom" -> "odom_ned"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1589465706.252 sec old)\nBuffer length: 0.000 sec\n"];
+"base_link" -> "base_link_frd"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1589465706.252 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_odom_frame" -> "camera_pose_frame"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 220.145 Hz\nMost recent transform: 1589465706.261 ( -0.010 sec old)\nBuffer length: 4.983 sec\n"];
+"world" -> "Robot_1/base_link"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 120.197 Hz\nMost recent transform: 1589465706.253 ( -0.001 sec old)\nBuffer length: 4.975 sec\n"];
+"os1_sensor" -> "pixhawk_imu"[label="Broadcaster: /play_1593624571685183495\nAverage rate: 99.245 Hz\nMost recent transform: 1589465706.267 ( -0.015 sec old)\nBuffer length: 4.978 sec\n"];
+"camera_pose_frame" -> "os1_sensor"[label="Broadcaster: /camera\nAverage rate: 9.726 Hz\nMost recent transform: 1589465706.326 ( -0.074 sec old)\nBuffer length: 4.935 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1589465706.252"[ shape=plaintext ] ;
+ }->"map";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1589465706.252"[ shape=plaintext ] ;
+ }->"odom";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1589465706.252"[ shape=plaintext ] ;
+ }->"base_link";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1589465706.252"[ shape=plaintext ] ;
+ }->"camera_odom_frame";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1589465706.252"[ shape=plaintext ] ;
+ }->"world";
+}
