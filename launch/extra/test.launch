@@ -1,0 +1,224 @@
+
+<launch>
+
+  <!-- Name of thle map to use and initial position -->
+  <arg name="map_file"       default="$(find second-project)/map/Camera/map.yaml"/> <!-- robopark_plan -->
+
+  <arg name="initial_pose_x" default="-0.5"/>
+  <arg name="initial_pose_y" default="0"/>
+  <arg name="initial_pose_a" default="0.033"/>
+
+    <arg name="scan_topic" value="/os1_cloud_node/scan"/>
+    <arg name="use_map_topic" value="true"/>
+
+  <arg name="odom_frame_id"   default="odom"/>
+   <arg name="base_frame_id"   default="base_link"/>
+  <arg name="global_frame_id" default="map"/>
+
+  <param name="/use_sim_time" value="true"/>
+
+
+<node pkg="tf" type="static_transform_publisher" name="optitrack3" args="-0.675 -0.008 0.96 3.14 0 0  camera_pose_frame os1_lidar  100" />
+<node pkg="tf" type="static_transform_publisher" name="optitrack5" args="0 0 0 0 0 0  odom camera_odom_frame   100" />
+
+
+<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node1" >  
+    <remap from="imu/data_raw" to="/os1_cloud_node/imu" />  
+    <remap from="/imu/data" to="/imu/data_o" />
+    <param name="use_mag" value="false"/>
+    <param name="use_magnetic_field_msg" value="false"/>
+    <param name="zeta" value="0.00"/>
+    <param name="gain" value="0.02"/>  
+</node>
+
+<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node2" >  
+    <remap from="imu/data_raw" to="/mavros/imu/data_raw" />  
+    <remap from="/imu/data" to="/imu/data_r" />
+    <param name="use_mag" value="false"/>
+    <param name="use_magnetic_field_msg" value="false"/>
+    <param name="zeta" value="0.00"/>
+    <param name="gain" value="0.02"/>  
+</node>
+
+
+
+
+
+<!-- Robot pose ekf -->
+    <node name="ekf_node" pkg="robot_localization" type="ekf_localization_node" clear_params="true">
+
+      <param name="frequency" value="60"/>
+      <param name="sensor_timeout" value="0.1"/>
+      <param name="two_d_mode" value="true"/>
+
+      <param name="map_frame" value="map"/>
+      <param name="odom_frame" value="camera_pose_frame"/>
+      <param name="base_link_frame" value="base_link"/>
+      <param name="world_frame" value="camera_pose_frame"/>
+
+      <param name="transform_time_offset" value="0.0"/>
+      <param name="transform_timeout" value="0.0"/>
+
+      <param name="odom0" value="/camera/odom/sample"/>
+      <param name="imu0" value="/imu/data_r"/>
+      <param name="imu1" value="/imu/data_o"/>
+
+      <rosparam param="odom0_config">[true,  true,  false,
+                                false, false, true,
+                                true,  true, true,
+                                false, false, true,
+                                false, false, false]</rosparam>
+<rosparam param="imu0_config">[true,  true,  true,
+                                false, false, false,
+                                true,  true, true,
+                                false, false, true,
+                                true, true, true]</rosparam>
+<rosparam param="imu1_config">[true,  true,  true,
+                                false, false, false,
+                                true,  true, true,
+                                false, false, true,
+                                true, true, true]</rosparam>
+
+      <param name="odom0_differential" value="false"/>
+      <param name="imu0_differential" value="false"/>
+        <param name="imu1_differential" value="false"/>
+   
+
+      <param name="odom0_relative" value="true"/>
+      <param name="imu0_relative" value="false"/>
+       <param name="imu1_relative" value="false"/>
+
+      <param name="imu0_remove_gravitational_acceleration" value="true"/>
+      <param name="imu1_remove_gravitational_acceleration" value="true"/>
+
+      <param name="print_diagnostics" value="true"/>
+
+      <param name="odom0_queue_size" value="10"/>
+      <param name="imu0_queue_size" value="10"/>
+            <param name="imu1_queue_size" value="10"/>
+
+      <param name="debug"           value="false"/>
+      <param name="debug_out_file"  value="debug_ekf_localization.txt"/>
+
+      <rosparam param="process_noise_covariance">[0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0.03, 0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0.03, 0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0.025, 0,     0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0.025, 0,    0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0.04, 0,    0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0.01, 0,    0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.01, 0,    0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02, 0,    0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.01, 0,    0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.01, 0,
+                                                  0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.015]</rosparam>
+
+      <rosparam param="initial_estimate_covariance">[1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    1e-9, 0,    0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    1e-9, 0,     0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9,  0,     0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1e-9,  0,     0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,  0,    0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9, 0,    0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9, 0,
+                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]</rosparam>
+
+    </node>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+<remap from="cloud_in" to="/os1_cloud_node/points"/>
+<remap from="scan" to="/os1_cloud_node/scan"/>
+<rosparam>
+
+transform_tolerance: 0.01
+min_height: 0.0
+max_height: 4.0
+angle_min: -3.14
+angle_max: 3.14
+angle_increment: 0.0087
+scan_time: 0.3333
+range_min: 0.45
+range_max: 10.0
+use_inf: true
+concurrency_level: 1
+</rosparam>
+</node>
+
+  <!--  ****** Maps *****  -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)">
+    <param name="frame_id" value="map"/>
+  </node>
+
+
+
+
+
+
+<node pkg="amcl" type="amcl" name="amcl">
+    <param name="use_map_topic"             value="$(arg use_map_topic)"/>
+    <!-- Publish scans from best pose at a max of 10 Hz -->
+    <param name="odom_model_type"           value="diff"/>
+    <param name="odom_alpha5"               value="0.1"/>
+    <param name="gui_publish_rate"          value="10.0"/>
+    <param name="laser_max_beams"             value="60"/>
+    <param name="laser_max_range"           value="12.0"/>
+    <param name="min_particles"             value="500"/>
+    <param name="max_particles"             value="2000"/>
+    <param name="kld_err"                   value="0.05"/>
+    <param name="kld_z"                     value="0.99"/>
+    <param name="odom_alpha1"               value="0.2"/>
+    <param name="odom_alpha2"               value="0.2"/>
+    <param name="odom_alpha3"               value="0.2"/>
+    <param name="odom_alpha4"               value="0.2"/>
+    <param name="laser_z_hit"               value="0.5"/>
+    <param name="laser_z_short"             value="0.05"/>
+    <param name="laser_z_max"               value="0.05"/>
+    <param name="laser_z_rand"              value="0.5"/>
+    <param name="laser_sigma_hit"           value="0.2"/>
+    <param name="laser_lambda_short"        value="0.1"/>
+    <param name="laser_model_type"          value="likelihood_field"/>
+    <!-- <param name="laser_model_type" value="beam"/> -->
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="update_min_d"              value="0.25"/>
+    <param name="update_min_a"              value="0.2"/>
+    <param name="odom_frame_id"             value="$(arg odom_frame_id)"/> 
+    <param name="base_frame_id"             value="$(arg base_frame_id)"/> 
+    <param name="global_frame_id"           value="$(arg global_frame_id)"/>
+    <param name="resample_interval"         value="1"/>
+    <!-- Increase tolerance because the computer can get quite busy -->
+    <param name="transform_tolerance"       value="1.0"/>
+    <param name="recovery_alpha_slow"       value="0.0"/>
+    <param name="recovery_alpha_fast"       value="0.0"/>
+    <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+    <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+    <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+  </node>
+
+
+  <!--  **************** Visualisation ****************  -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find second-project)/rviz/project.rviz"/>
+
+</launch>
