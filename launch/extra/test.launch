@@ -20,7 +20,8 @@
 
 <node pkg="tf" type="static_transform_publisher" name="optitrack3" args="-0.675 -0.008 0.96 3.14 0 0  base_link os1_lidar  100" />
 <node pkg="tf" type="static_transform_publisher" name="optitrack5" args="0 0 0 0 0 0  odom camera_odom_frame   100" />
-
+<node pkg="tf" type="static_transform_publisher" name="optitrack6" args="0 0 0 0 0 0   odom_ned os1_imu   100" />
+<node pkg="tf" type="static_transform_publisher" name="optitrack7" args="0 0 0 0 0 0  odom_ned os1_sensor   100" />
 
 <node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node1" >  
     <remap from="imu/data_raw" to="/os1_cloud_node/imu" />  
