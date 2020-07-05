@@ -18,27 +18,27 @@
   <param name="/use_sim_time" value="true"/>
 
 
-<node pkg="tf" type="static_transform_publisher" name="optitrack3" args="-0.675 -0.008 0.96 3.14 0 0  base_link os1_lidar  100" />
-<node pkg="tf" type="static_transform_publisher" name="optitrack5" args="0 0 0 0 0 0  odom camera_odom_frame   100" />
-<node pkg="tf" type="static_transform_publisher" name="optitrack6" args="0 0 0 0 0 0   odom_ned os1_imu   100" />
-<node pkg="tf" type="static_transform_publisher" name="optitrack7" args="0 0 0 0 0 0  odom_ned os1_sensor   100" />
+<node pkg="tf" type="static_transform_publisher" name="baset2lidar" args="-0.675 -0.008 0.96 3.14 0 0  base_link os1_lidar  100" />
+<node pkg="tf" type="static_transform_publisher" name="odom2camodom" args="0 0 0 0 0 0  odom camera_odom_frame   100" />
+<node pkg="tf" type="static_transform_publisher" name="odom2imu" args="0 0 0 0 0 0   odom_ned os1_imu   100" />
+<node pkg="tf" type="static_transform_publisher" name="odom2imu2" args="0 0 0 0 0 0  odom_ned os1_sensor   100" />
 
-<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node1" >  
-    <remap from="imu/data_raw" to="/os1_cloud_node/imu" />  
+<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node1" >
+    <remap from="imu/data_raw" to="/os1_cloud_node/imu" />
     <remap from="/imu/data" to="/imu/data_o" />
     <param name="use_mag" value="false"/>
     <param name="use_magnetic_field_msg" value="false"/>
     <param name="zeta" value="0.00"/>
-    <param name="gain" value="0.02"/>  
+    <param name="gain" value="0.02"/>
 </node>
 
-<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node2" >  
-    <remap from="imu/data_raw" to="/mavros/imu/data_raw" />  
+<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node2" >
+    <remap from="imu/data_raw" to="/mavros/imu/data_raw" />
     <remap from="/imu/data" to="/imu/data_r" />
     <param name="use_mag" value="false"/>
     <param name="use_magnetic_field_msg" value="false"/>
     <param name="zeta" value="0.00"/>
-    <param name="gain" value="0.02"/>  
+    <param name="gain" value="0.02"/>
 </node>
 
 
@@ -83,7 +83,7 @@
       <param name="odom0_differential" value="false"/>
       <param name="imu0_differential" value="false"/>
         <param name="imu1_differential" value="false"/>
-   
+
 
       <param name="odom0_relative" value="true"/>
       <param name="imu0_relative" value="false"/>
@@ -204,8 +204,8 @@ concurrency_level: 1
     <param name="laser_likelihood_max_dist" value="2.0"/>
     <param name="update_min_d"              value="0.25"/>
     <param name="update_min_a"              value="0.2"/>
-    <param name="odom_frame_id"             value="$(arg odom_frame_id)"/> 
-    <param name="base_frame_id"             value="$(arg base_frame_id)"/> 
+    <param name="odom_frame_id"             value="$(arg odom_frame_id)"/>
+    <param name="base_frame_id"             value="$(arg base_frame_id)"/>
     <param name="global_frame_id"           value="$(arg global_frame_id)"/>
     <param name="resample_interval"         value="1"/>
     <!-- Increase tolerance because the computer can get quite busy -->
