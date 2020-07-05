@@ -102,11 +102,11 @@ concurrency_level: 1
       <param name="transform_time_offset" value="0.0"/>
       <param name="transform_timeout" value="0.0"/>
 
-      <param name="odom0" value="/camera/odom/sample"/>
+      <param name="pose0" value="/Robot_1/pose"/>
       <param name="imu0" value="/imu/data_r"/>
       <param name="imu1" value="/imu/data_o"/>
 
-      <rosparam param="odom0_config">[true,  true,  false,
+      <rosparam param="pose0_config">[true,  true,  false,
                                 false, false, true,
                                 true,  true, true,
                                 false, false, true,
@@ -122,12 +122,12 @@ concurrency_level: 1
                                 false, false, true,
                                 true, true, true]</rosparam>
 
-      <param name="odom0_differential" value="false"/>
+      <param name="pose0_differential" value="false"/>
       <param name="imu0_differential" value="false"/>
         <param name="imu1_differential" value="false"/>
    
 
-      <param name="odom0_relative" value="true"/>
+      <param name="pose0_relative" value="true"/>
       <param name="imu0_relative" value="false"/>
        <param name="imu1_relative" value="false"/>
 
@@ -136,7 +136,7 @@ concurrency_level: 1
 
       <param name="print_diagnostics" value="true"/>
 
-      <param name="odom0_queue_size" value="10"/>
+      <param name="pose0_queue_size" value="10"/>
       <param name="imu0_queue_size" value="10"/>
             <param name="imu1_queue_size" value="10"/>
 
