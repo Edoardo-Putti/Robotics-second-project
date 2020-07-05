@@ -18,7 +18,7 @@
   <param name="/use_sim_time" value="true"/>
 
 
-<node pkg="tf" type="static_transform_publisher" name="optitrack3" args="-0.675 -0.008 0.96 3.14 0 0  camera_pose_frame os1_lidar  100" />
+<node pkg="tf" type="static_transform_publisher" name="optitrack3" args="-0.675 -0.008 0.96 3.14 0 0  base_link os1_lidar  100" />
 <node pkg="tf" type="static_transform_publisher" name="optitrack5" args="0 0 0 0 0 0  odom camera_odom_frame   100" />
 
 
